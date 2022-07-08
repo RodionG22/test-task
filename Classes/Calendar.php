@@ -4,7 +4,7 @@ class Calendar {
     public $url;
     public $request;
     private $db;
-    private $token="123";
+    private $token=BEARER_TOKEN;
     private $bearer_token;
     private $tableName;
     public function __construct()
