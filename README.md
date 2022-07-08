@@ -31,7 +31,10 @@
  
 5. REQUEST_METHOD:
 GET - //http://{domen}?calendar
+
 POST - //http://{domen}?calendar
+
 PATCH - //http://{domen}?calendar/{id}
+
 DELETE - //http://{domen}?calendar/{id}
 
