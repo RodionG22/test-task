@@ -66,11 +66,11 @@ class Calendar {
             if ( isset($this->request['date_start']) && isset($this->request['date_end']) ){
                 $date_end=$this->request['date_end'];
                 $date_start=$this->request['date_start'];
-                if ( is_Date($date_end) && is_Date($date_start) ){
+                if ( isDate($date_end) && isDate($date_start) ){
 
                         $data=$this->db->query("Select * from calendar where '$date_start'<=datetime and datetime<='$date_end' ");
    
-                        $this->Send($data);
+                        $this->send($data);
                 } else {
                     $this->sendError(415,"Wrong var Type");
                  }
@@ -124,7 +124,7 @@ class Calendar {
         $last_id=$this->db->last_id();
         $data=$this->db->query("select * from $this->tableName where id = $last_id ");
         $data['status']="inserted";
-        $this->Send($data);
+        $this->send($data);
     }
         // $_SERVER['REQUEST_METHOD']=PATCH
     private function patchAPI($id){
@@ -172,7 +172,7 @@ class Calendar {
                         $this->db->query($sql);
                         $res=($this->db->query("SELECT * FROM $this->tableName where id=$id "));
                         $res['status']="edited";
-                        $this->Send($res);
+                        $this->send($res);
                     }
                     
                 }
@@ -206,7 +206,7 @@ class Calendar {
                     $delrecord=$this->db->query("SELECT * FROM $this->tableName where id=$id ");
                     $delrecord['status']="deleted";
                     $this->db->query("Delete from $this->tableName where id =$id");
-                    $this->Send($delrecord);
+                    $this->send($delrecord);
 
             }
          } else {
@@ -237,19 +237,19 @@ class Calendar {
             $pos      = strripos($haystack, $needle);
             if ($pos === false) {
        
-                $id=$this->IsIntNumber($id);
+                $id=$this->isIntNumber($id);
                 return $id;
             }else {
 
                 $url=explode("&",$id);
 
-                $id=$this->IsIntNumber($url[0]);
+                $id=$this->isIntNumber($url[0]);
                 return $id;
             } 
         }
     }
 
-    private function IsIntNumber(int $number) {
+    private function isIntNumber(int $number) {
 
         if (is_numeric($number)){
             $id1=$number - floor($number);
@@ -273,7 +273,7 @@ class Calendar {
                     return ($value ? true : false); 
                 break;
             case "DATETIME":
-                    return is_Date($value); 
+                    return isDate($value); 
                 break;
         }
     }
@@ -315,11 +315,11 @@ class Calendar {
        echo json_encode(['status'=>$status,'message'=>$text],JSON_UNESCAPED_UNICODE);
        exit();
     }
-    private function Send($data){
+    private function send($data){
         echo json_encode($data);
     }
 }
 
-function is_Date($str){
+function isDate($str){
     return is_numeric(strtotime($str));
 }
