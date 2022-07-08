@@ -30,8 +30,8 @@
 4. Для запросов можно использовать Insomnia и альтернативные программы. 
  
 5. REQUEST_METHOD:
-GET - //http://{domen}/?calendar
-POST - //http://{domen}/?calendar
-PATCH - //http://{domen}/?calendar/<id>
-DELETE - //http://{domen}/?calendar/<id>
+GET - //http://{domen}?calendar
+POST - //http://{domen}?calendar
+PATCH - //http://{domen}?calendar/<id>
+DELETE - //http://{domen}?calendar/<id>
 
