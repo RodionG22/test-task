@@ -1,7 +1,7 @@
 # test-task
-test-task
 1. Запустить на локальном или захостить сайт.
-2. Создать бд в phpmyadmin. Создать таблицу Calendar 
+2. 
+3. Создать бд в phpmyadmin. Создать таблицу Calendar 
 
   SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
   START TRANSACTION;
@@ -22,8 +22,12 @@ test-task
   ALTER TABLE `calendar`
     MODIFY `id` int NOT NULL AUTO_INCREMENT;
   COMMIT;
+  
+  
 3.В папке configh.php заполнить hostname,username,password,db_database и bearer_token
+
 4. Для запросов можно использовать Insomnia и альтернативные программы. 
+ 
 5. REQUEST_METHOD:
 GET - //http://{domen}/?calendar
 POST - //http://{domen}/?calendar
