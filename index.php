@@ -70,7 +70,7 @@ $api->endpointsApi();
 
 // $_SERVER['REQUEST_METHOD']
 
-//http://{domen}/?calendar/<id>
+//http://{domen}?calendar/<id>
 
 
 ?>

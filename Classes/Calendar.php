@@ -12,7 +12,7 @@ class Calendar {
         $this->db=new DB();
         $this->request=$_REQUEST;
         $this->url=((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        $this->url = urldecode($this->url);  //      '/'  заменяеться на '%2F' поэтому делаем заменяем обратно
+        $this->url = urldecode($this->url);  //     декод урла 
         $this->bearer_token =substr(apache_request_headers()['Authorization'],7);
     }
 
@@ -60,7 +60,7 @@ class Calendar {
          }  
 
     }
-    // $_SERVER['REQUEST_METHOD']=GET
+
     private function getAPI(){
         if ($this->validateBearerToken()) {
             if ( isset($this->request['date_start']) && isset($this->request['date_end']) ){
@@ -82,13 +82,12 @@ class Calendar {
         }
 
     }
-    // $_SERVER['REQUEST_METHOD']=POST
+
     private function postAPI($data){
 
         // Проверка на дубликат
         if ( isset($data['id'] ) && $data['id']) { 
             $id=$data['id'];
-
             $checkid=$this->db->query("Select * from calendar where id=$id ");
             if (!empty($checkid))
                 $this->sendError(0,"Primary key duplicate"); 
@@ -126,14 +125,13 @@ class Calendar {
         $data['status']="inserted";
         $this->send($data);
     }
-        // $_SERVER['REQUEST_METHOD']=PATCH
+
     private function patchAPI($id){
 
         if ($this->validateBearerToken()) {
             $q=$this->db->query("select * from $this->tableName where id=$id ");
-     
             if (empty($q)){
-                $this->sendError(401,"No record to edit");
+                $this->sendError(401,"No record to edit");  // проверка на наличие записи с таким-то id
             } else {
                 $datetime=new DateTime('now');
                 $datetime1=$datetime->format('Y-m-d H:i:s');
@@ -143,7 +141,7 @@ class Calendar {
                 $q=$this->db->query("select * from $this->tableName where id=$id and '$datetime1'<=datetime and datetime<='$datetime2'");
          
                 if (!empty($q))
-                    $this->sendError(0,"3 hours not passed yet");
+                    $this->sendError(0,"3 hours not passed yet");       // прошло ли 3 часа 
                 else {
                     $sql="WHERE `$this->tableName`.`id`=$id";
                     $sql_upd=[];
@@ -153,8 +151,8 @@ class Calendar {
                     foreach ($cols as $col){
                         if ($col['EXTRA']=='auto_increment')
                             continue;
-                        if (isset($this->request[$col['COLUMN_NAME']] ) ) {
-                            if ($this->validateValueType($this->request[$col['COLUMN_NAME']],$col['DATA_TYPE'])) {
+                        if (isset($this->request[$col['COLUMN_NAME']] ) ) {                         // наличие необходимых полей
+                            if ($this->validateValueType($this->request[$col['COLUMN_NAME']],$col['DATA_TYPE'])) {         // валидация значений
 
                                 $sql_upd[]= "`".$col['COLUMN_NAME']."`"."="." ' ". $this->request[$col['COLUMN_NAME']]."'" ;                      
                             } else {
@@ -163,9 +161,8 @@ class Calendar {
                             } 
                         }
                     }
-
-                    if (empty($sql_upd)){
-                        $this->sendError(0,"Nothing to edit");
+                    if (empty($sql_upd)){           
+                        $this->sendError(0,"Nothing to edit"); // ни одного поля чтобы редактировать
                     } else {
                         $sql_upd=implode(",",$sql_upd);
                         $sql=" UPDATE $this->tableName SET $sql_upd "."$sql";
@@ -183,7 +180,7 @@ class Calendar {
             $this->sendError(401,"No bearer token");
          }
     }
-    // $_SERVER['REQUEST_METHOD']=DELETE
+
     private function deleteAPI($id){
 
         if ($this->validateBearerToken()) {
@@ -191,30 +188,25 @@ class Calendar {
             $q=$this->db->query("select * from $this->tableName where id=$id ");
 
             if (empty($q)){
-                $this->sendError(401,"No record to delete");
+                $this->sendError(401,"No record to delete");        // проверка наличия записи
             } else {
-
                 $datetime=new DateTime('now');
                 $datetime1=$datetime->format('Y-m-d H:i:s');
                 $datetime->modify('3 hours');
                 $datetime2=$datetime->format('Y-m-d H:i:s');
-
                 $q=$this->db->query("select * from $this->tableName where id=$id and '$datetime1'<=datetime and datetime<='$datetime2'");
                 if (!empty($q))
-                    $this->sendError(401,"3 hours not passed yet");
+                    $this->sendError(401,"3 hours not passed yet");        // прошло ли 3 часа 
                 else 
                     $delrecord=$this->db->query("SELECT * FROM $this->tableName where id=$id ");
                     $delrecord['status']="deleted";
                     $this->db->query("Delete from $this->tableName where id =$id");
                     $this->send($delrecord);
-
             }
          } else {
             $this->sendError(401,"No bearer token");
          }
     }
-
-  
 
     private function getTableColsInfo($tableName){
         $cols=$this->db->query("select column_name, data_type,extra from information_schema.columns where table_schema = 'task'  and TABLE_NAME='$tableName' order by table_name,ordinal_position");
