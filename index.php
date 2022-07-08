@@ -68,6 +68,8 @@ spl_autoload_register('autoloader');
 $api=new Calendar();
 $api->endpointsApi();
 
+// $_SERVER['REQUEST_METHOD']
+
 //http://{domen}/?calendar/<id>
 
 

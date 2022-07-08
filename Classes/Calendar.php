@@ -60,7 +60,7 @@ class Calendar {
          }  
 
     }
-
+    // $_SERVER['REQUEST_METHOD']=GET
     private function getAPI(){
         if ($this->validateBearerToken()) {
             if ( isset($this->request['date_start']) && isset($this->request['date_end']) ){
@@ -82,7 +82,7 @@ class Calendar {
         }
 
     }
-
+    // $_SERVER['REQUEST_METHOD']=POST
     private function postAPI($data){
 
         // Проверка на дубликат
@@ -126,6 +126,7 @@ class Calendar {
         $data['status']="inserted";
         $this->Send($data);
     }
+        // $_SERVER['REQUEST_METHOD']=PATCH
     private function patchAPI($id){
 
         if ($this->validateBearerToken()) {
@@ -182,7 +183,7 @@ class Calendar {
             $this->sendError(401,"No bearer token");
          }
     }
-
+    // $_SERVER['REQUEST_METHOD']=DELETE
     private function deleteAPI($id){
 
         if ($this->validateBearerToken()) {
